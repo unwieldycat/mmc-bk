@@ -33,6 +33,10 @@ async function createZipFromDir(
 	});
 }
 
+function getAccessDate(filePath: string): Date {
+	return Deno.statSync(filePath).atime || new Date(0);
+}
+
 // ================================== Main ================================== //
 
 /*
