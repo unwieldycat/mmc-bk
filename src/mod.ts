@@ -39,10 +39,23 @@ function getModifiedDate(filePath: string): Date {
 
 // ================================== Main ================================== //
 
-/*
 // Get Environment Variables
 const instanceName = Deno.env.get("INST_NAME");
 const minecraftPath = Deno.env.get("INST_MC_DIR");
 const backupPath = Deno.env.get("MMCBK_DIR");
 const purgeCount = Number(Deno.env.get("MMCBK_PURGE") || "0");
-*/
+
+if (!instanceName || !minecraftPath || !backupPath) Deno.exit(1);
+
+const savesPath = resolve(minecraftPath, "saves");
+
+for await (const dirEntry of walk(savesPath, { maxDepth: 0 })) {
+	const lastPlayedDate = getModifiedDate(resolve(dirEntry.path, "level.dat"));
+
+	// TODO: Check date against backups log
+	// TODO: If not modified, return
+
+	createZipFromDir(dirEntry.path, backupPath, dirEntry.name);
+}
+
+// TODO: Purge old backups
