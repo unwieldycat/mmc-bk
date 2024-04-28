@@ -1,0 +1,14 @@
+{
+	"fmt": {
+		"semiColons": true,
+		"useTabs": true,
+		"indentWidth": 4,
+		"singleQuote": false
+	},
+	"imports": {
+		"@std/fmt": "jsr:@std/fmt@^0.224.0",
+		"@std/fs": "jsr:@std/fs@^0.224.0",
+		"@std/path": "jsr:@std/path@^0.224.0",
+		"@zip-js/zip-js": "jsr:@zip-js/zip-js@^2.7.43"
+	}
+}
