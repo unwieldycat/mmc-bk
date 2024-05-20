@@ -49,13 +49,17 @@ if (!instanceName || !minecraftPath || !backupPath) Deno.exit(1);
 
 const savesPath = resolve(minecraftPath, "saves");
 
-for await (const dirEntry of walk(savesPath, { maxDepth: 0 })) {
-	const lastPlayedDate = getModifiedDate(resolve(dirEntry.path, "level.dat"));
+for await (const { isDirectory, name } of Deno.readDir(savesPath)) {
+	if (!isDirectory) continue;
+
+	const worldPath = resolve(savesPath, name);
+	const lastPlayedDate = getModifiedDate(resolve(worldPath, "level.dat"));
+	const saveString = `${name}_${lastPlayedDate.toISOString()}`;
 
 	// TODO: Check date against backups log
 	// TODO: If not modified, return
 
-	createZipFromDir(dirEntry.path, backupPath, dirEntry.name);
+	createZipFromDir(worldPath, backupPath, saveString);
 }
 
 // TODO: Purge old backups
