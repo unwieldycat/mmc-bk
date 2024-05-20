@@ -45,7 +45,19 @@ const minecraftPath = Deno.env.get("INST_MC_DIR");
 const backupPath = Deno.env.get("MMCBK_DIR");
 const purgeCount = Number(Deno.env.get("MMCBK_PURGE") || "0");
 
-if (!instanceName || !minecraftPath || !backupPath) Deno.exit(1);
+if (!backupPath) {
+	console.error("Unable to backup: MMCBK_DIR not defined!");
+	Deno.exit(1);
+}
+
+if (!instanceName || !minecraftPath) {
+	console.error(
+		"Unable to backup: Missing MultiMC environment variables.",
+	);
+	Deno.exit(1);
+}
+
+console.log(`Backing up worlds from instance ${instanceName} to ${backupPath}`);
 
 const savesPath = resolve(minecraftPath, "saves");
 
@@ -59,6 +71,7 @@ for await (const { isDirectory, name } of Deno.readDir(savesPath)) {
 	// TODO: Check date against backups log
 	// TODO: If not modified, return
 
+	console.log(`Backing up world ${name}`);
 	createZipFromDir(worldPath, backupPath, saveString);
 }
 
