@@ -1,5 +1,5 @@
 import { resolve } from "@std/path";
-import { createZipFromDir, getModifiedDate } from "./utils.ts";
+import { createZipFromDir, getDirNames, getModifiedDate } from "./utils.ts";
 
 // Get Environment Variables
 const instanceName = Deno.env.get("INST_NAME");
@@ -30,8 +30,11 @@ for await (const { isDirectory, name } of Deno.readDir(savesPath)) {
 	const lastPlayedDate = getModifiedDate(resolve(worldPath, "level.dat"));
 	const saveString = `${name}_${lastPlayedDate.toISOString()}`;
 
-	// TODO: Check date against backups log
-	// TODO: If not modified, return
+	const prevSaveNames = await getDirNames(backupPath);
+	if (prevSaveNames.includes(saveString)) {
+		console.log(`Backup already exists for world ${name}`);
+		continue;
+	}
 
 	console.log(`Backing up world ${name}`);
 	createZipFromDir(worldPath, backupPath, saveString);
