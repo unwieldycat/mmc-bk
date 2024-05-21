@@ -34,3 +34,11 @@ export async function createZipFromDir(
 export function getModifiedDate(filePath: string): Date {
 	return Deno.statSync(filePath).mtime || new Date(0);
 }
+
+export async function getDirNames(dirPath: string): Promise<Array<string>> {
+	const namesArr: Array<string> = [];
+	for await (const { isDirectory, name } of Deno.readDir(dirPath)) {
+		if (isDirectory) namesArr.push(name);
+	}
+	return namesArr;
+}
